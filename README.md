@@ -33,4 +33,4 @@ Solved real-world deployment challenges including CORS issues, API connectivity 
 
 Technologies Used
 
-AWS S3, AWS EC2, MongoDB Atlas, Node.js, Express.js, React.js,Linux
+AWS S3, AWS EC2, MongoDB Atlas, Node.js, Express.js,Typescript, React.js,Linux
