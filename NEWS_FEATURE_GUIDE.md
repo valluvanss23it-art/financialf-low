@@ -931,7 +931,7 @@ test('useNews fetches articles', async () => {
 
 ## License & Credits
 
-This financial news feature is part of the Financial Compass Investment Portfolio Tracker.
+This financial news feature is part of the financeflow Investment Portfolio Tracker.
 
 Developed with ❤️ for the financial community.
 
@@ -947,3 +947,4 @@ Developed with ❤️ for the financial community.
 
 **Last Updated:** March 3, 2026  
 **Status:** ✅ Production Ready
+

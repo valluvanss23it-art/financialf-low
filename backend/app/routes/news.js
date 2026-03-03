@@ -135,7 +135,7 @@ router.post('/', auth, async (req, res) => {
       title,
       description,
       content,
-      source: source || 'Financial Compass',
+      source: source || 'financeflow',
       category: category || 'general',
       imageUrl,
       articleUrl
@@ -177,3 +177,4 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 module.exports = router;
+

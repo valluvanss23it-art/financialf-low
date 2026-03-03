@@ -26,7 +26,7 @@ export default function App() {
         backgroundColor: 'rgba(0,0,0,0.3)',
         borderRadius: '10px'
       }}>
-        <h1>✅ Financial Compass Ready!</h1>
+        <h1>✅ financeflow Ready!</h1>
         <p style={{ fontSize: '18px', marginTop: '10px' }}>
           Backend Status: {backendHealth ? '✅ Connected' : '❌ Not Connected'}
         </p>
@@ -46,3 +46,4 @@ export default function App() {
     </div>
   );
 }
+

@@ -1,6 +1,6 @@
 # MySQL Database Setup and Queries
 
-This directory contains all MySQL schema definitions and query examples for the Financial Compass application.
+This directory contains all MySQL schema definitions and query examples for the financeflow application.
 
 ## Quick Setup
 
@@ -213,3 +213,4 @@ DROP DATABASE IF EXISTS financial_compass;
 For issues or questions, refer to:
 - [Backend README](../README.md)
 - [MySQL Setup Guide](../MYSQL_SETUP.md)
+

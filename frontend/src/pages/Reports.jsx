@@ -86,7 +86,7 @@ export default function Reports() {
       // Header
       doc.setFontSize(20);
       doc.setTextColor(40, 40, 40);
-      doc.text('Financial Compass Report', 14, 20);
+      doc.text('financeflow Report', 14, 20);
 
       doc.setFontSize(10);
       doc.setTextColor(100, 100, 100);
@@ -359,7 +359,7 @@ export default function Reports() {
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
         doc.text(
-          `Page ${i} of ${pageCount} | Financial Compass © ${new Date().getFullYear()}`,
+          `Page ${i} of ${pageCount} | financeflow © ${new Date().getFullYear()}`,
           doc.internal.pageSize.width / 2,
           doc.internal.pageSize.height - 10,
           { align: 'center' }
@@ -529,3 +529,4 @@ export default function Reports() {
     </Layout>
   );
 }
+

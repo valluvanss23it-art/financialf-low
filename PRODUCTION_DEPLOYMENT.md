@@ -1,4 +1,4 @@
-# Financial Compass - Production Deployment Guide
+# financeflow - Production Deployment Guide
 
 ## Table of Contents
 1. [Project Structure](#project-structure)
@@ -782,4 +782,5 @@ lighthouse https://yourdomain.com
 ---
 
 **Last Updated**: March 2026
-**Maintainer**: Financial Compass Team
+**Maintainer**: financeflow Team
+

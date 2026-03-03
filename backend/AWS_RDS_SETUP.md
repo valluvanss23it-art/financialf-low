@@ -1,6 +1,6 @@
-# AWS RDS Setup Guide for Financial Compass
+# AWS RDS Setup Guide for financeflow
 
-This guide explains how to deploy your Financial Compass backend to AWS with RDS (MySQL) and optional DynamoDB.
+This guide explains how to deploy your financeflow backend to AWS with RDS (MySQL) and optional DynamoDB.
 
 ## Prerequisites
 
@@ -274,3 +274,4 @@ DB_SSL_REJECT_UNAUTHORIZED=false  # Only for testing
 ---
 
 Your backend is now configured to work with both local MySQL and AWS RDS. Toggle between them using the `USE_AWS_RDS` environment variable.
+

@@ -1,4 +1,4 @@
-# financeflow - Financial Compass
+# financeflow - financeflow
 
 A comprehensive full-stack financial management application built with React, TypeScript, and Express.js. Manage your assets, investments, income, expenses, goals, and more all in one place.
 ![Uploading image.png…]()
@@ -19,7 +19,7 @@ A comprehensive full-stack financial management application built with React, Ty
 
 ## 🛠️ Tech Stack
 
-Project: Financial Compass – Cloud Based Financial Management Web App
+Project: financeflow – Cloud Based Financial Management Web App
 
 Built a full-stack financial management web application to help users track expenses, financial goals, and personal finance data in real time.
 
@@ -34,3 +34,4 @@ Solved real-world deployment challenges including CORS issues, API connectivity 
 Technologies Used
 
 AWS S3, AWS EC2, MongoDB Atlas, Node.js, Express.js,Typescript, React.js,Linux
+

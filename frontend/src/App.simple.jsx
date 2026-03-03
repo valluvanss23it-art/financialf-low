@@ -30,7 +30,7 @@ export default function App() {
           marginBottom: '10px',
           fontWeight: '600'
         }}>
-          Financial Compass
+          financeflow
         </p>
         <p style={{ 
           color: '#666', 
@@ -75,3 +75,4 @@ export default function App() {
     </div>
   );
 }
+

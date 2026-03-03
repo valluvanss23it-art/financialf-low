@@ -1,4 +1,4 @@
--- Complete MySQL Database Setup for Financial Compass
+-- Complete MySQL Database Setup for financeflow
 -- Run this file to create all tables at once
 
 -- Create database
@@ -231,3 +231,4 @@ CREATE TABLE tax (
 -- Display success message
 SELECT 'All tables created successfully!' as status;
 SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = 'financial_compass';
+

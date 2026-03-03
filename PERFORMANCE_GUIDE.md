@@ -1,8 +1,8 @@
-# Financial Compass - Performance Optimization Guide
+# financeflow - Performance Optimization Guide
 
 ## Overview
 
-This guide provides concrete strategies to optimize the Financial Compass application for production environments.
+This guide provides concrete strategies to optimize the financeflow application for production environments.
 
 ---
 
@@ -703,3 +703,4 @@ const getShardNumber = (userId) => {
 
 **Generated:** March 2026
 **Last Updated:** March 2026
+

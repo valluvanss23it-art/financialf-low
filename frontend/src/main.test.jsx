@@ -23,7 +23,7 @@ function TestApp() {
           ✅ React Working!
         </h1>
         <p style={{ color: '#333', fontSize: '20px', marginBottom: '30px' }}>
-          Financial Compass Frontend is Running
+          financeflow Frontend is Running
         </p>
         <button 
           onClick={() => window.location.href = '/auth'}
@@ -51,3 +51,4 @@ if (root) {
 } else {
   console.error("Root element not found!");
 }
+

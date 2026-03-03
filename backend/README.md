@@ -1,6 +1,6 @@
-# Financial Compass Backend
+# financeflow Backend
 
-Node.js/Express + MongoDB backend for the Financial Compass application.
+Node.js/Express + MongoDB backend for the financeflow application.
 
 ## Prerequisites
 
@@ -316,4 +316,5 @@ The frontend API client has been updated to use the new Express backend. The old
 
 ## License
 
-This backend is part of the Financial Compass project.
+This backend is part of the financeflow project.
+

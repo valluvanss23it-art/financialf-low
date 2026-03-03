@@ -5,6 +5,11 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  esbuild: {
+    loader: "tsx",
+    include: /src\/.*\.[jt]sx?$/,
+    exclude: [],
+  },
   server: {
     host: "0.0.0.0",
     port: 8081,

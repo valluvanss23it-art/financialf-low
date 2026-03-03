@@ -15,7 +15,7 @@ const newsSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    default: 'Financial Compass'
+    default: 'financeflow'
   },
   category: {
     type: String,
@@ -47,3 +47,4 @@ const newsSchema = new mongoose.Schema({
 newsSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model('News', newsSchema);
+

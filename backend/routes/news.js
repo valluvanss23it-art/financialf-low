@@ -275,7 +275,7 @@ router.post('/', auth, async (req, res) => {
       title: title.trim(),
       description: description.trim(),
       content: content ? content.trim() : null,
-      source: source?.trim() || 'Financial Compass',
+      source: source?.trim() || 'financeflow',
       category: category || 'general',
       imageUrl: imageUrl?.trim() || null,
       articleUrl: articleUrl?.trim() || null
@@ -338,3 +338,4 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 module.exports = router;
+

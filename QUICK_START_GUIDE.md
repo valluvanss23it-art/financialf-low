@@ -1,6 +1,6 @@
-# Financial Compass - Quick Start Guide
+# financeflow - Quick Start Guide
 
-Get the Financial Compass application up and running in minutes!
+Get the financeflow application up and running in minutes!
 
 ## ⚡ 5-Minute Setup (Development)
 
@@ -518,3 +518,4 @@ Start building! 🚀
 
 **Last Updated**: March 2026  
 **Version**: 1.0.0
+

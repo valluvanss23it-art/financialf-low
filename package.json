@@ -1,7 +1,7 @@
 {
   "name": "financial-compass",
   "version": "1.0.0",
-  "description": "Financial Compass - Full Stack Application",
+  "description": "financeflow - Full Stack Application",
   "scripts": {
     "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
     "dev:all": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
@@ -15,3 +15,4 @@
     "preview": "cd frontend && npm run preview"
   }
 }
+

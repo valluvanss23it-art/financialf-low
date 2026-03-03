@@ -1,4 +1,4 @@
--- Common MySQL Queries for Financial Compass Application
+-- Common MySQL Queries for financeflow Application
 -- Use these queries in your application routes
 
 -- ============================================
@@ -293,3 +293,4 @@
 -- WHERE user_id = ? AND date >= DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH)
 -- GROUP BY DATE_FORMAT(date, '%Y-%m')
 -- ORDER BY month;
+

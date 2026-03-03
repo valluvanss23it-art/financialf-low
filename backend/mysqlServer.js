@@ -195,7 +195,7 @@ async function ensureSchema() {
       title VARCHAR(500) NOT NULL,
       description TEXT NOT NULL,
       content LONGTEXT,
-      source VARCHAR(255) DEFAULT 'Financial Compass',
+      source VARCHAR(255) DEFAULT 'financeflow',
       category ENUM('market', 'economy', 'stocks', 'crypto', 'commodities', 'general') DEFAULT 'general',
       image_url TEXT,
       article_url TEXT,
@@ -234,3 +234,4 @@ async function ensureSchema() {
 }
 
 module.exports = { attachPool, registerMysqlHealthRoute, ensureSchema };
+

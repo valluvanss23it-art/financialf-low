@@ -1,4 +1,4 @@
-# Financial Compass - Investment Portfolio Tracker
+# financeflow - Investment Portfolio Tracker
 
 A modern, production-ready web application for managing and tracking investments, assets, and financial portfolio performance.
 
@@ -422,3 +422,4 @@ See [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md#troubleshooting) for m
 **Repository**: https://github.com/yourusername/financial-compass  
 **Documentation**: https://financial-compass-docs.com  
 **Live Demo**: https://financial-compass.com
+

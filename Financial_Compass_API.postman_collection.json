@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "financial-compass-api",
-    "name": "Financial Compass API",
-    "description": "API collection for Financial Compass Backend",
+    "name": "financeflow API",
+    "description": "API collection for financeflow Backend",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -208,3 +208,4 @@
     }
   ]
 }
+
