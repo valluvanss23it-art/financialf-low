@@ -1,6 +1,6 @@
 # financeflow - financeflow
 
-A comprehensive full-stack financial management application built with React, TypeScript, and Express.js. Manage your assets, investments, income, expenses, goals, and more all in one place.
+A comprehensive full-stack financial management application built with React, and Express.js, TypeScript. Manage your assets, investments, income, expenses, goals, and more all in one place.
 ![Uploading image.png…]()
 
 ## ✨ Features
