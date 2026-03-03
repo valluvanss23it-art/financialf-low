@@ -3,17 +3,22 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
-const { setupAutomaticNewsUpdates, addSampleNews } = require('./services/newsService');
 
 // Connect to MongoDB Atlas
 if (process.env.MONGODB_URI) {
-  connectDB();
+  connectDB().catch(err => {
+    console.error('MongoDB connection failed:', err.message);
+    console.warn('Running without MongoDB.');
+  });
 } else {
-  console.error('MONGODB_URI not configured. Please set it in .env file');
-  process.exit(1);
+  console.warn('MONGODB_URI not configured. Running without MongoDB.');
 }
 
 const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Backend Running 🔥');
+});
 
 // Add request logging FIRST
 app.use((req, res, next) => {
@@ -42,19 +47,48 @@ app.use(express.static(distPath, {
 
 // Routes - wrapped in try-catch
 try {
+  console.log('Loading authentication route...');
   app.use('/api/auth', require('./routes/auth'));
+  
+  console.log('Loading profile route...');
   app.use('/api/profile', require('./routes/profile'));
+  
+  console.log('Loading transactions route...');
   app.use('/api/transactions', require('./routes/transactions'));
+  
+  console.log('Loading income route...');
   app.use('/api/income', require('./routes/income'));
+  
+  console.log('Loading expenses route...');
   app.use('/api/expenses', require('./routes/expenses'));
+  
+  console.log('Loading goals route...');
   app.use('/api/goals', require('./routes/goals'));
+  
+  console.log('Loading assets route...');
   app.use('/api/assets', require('./routes/assets'));
+  
+  console.log('Loading liabilities route...');
   app.use('/api/liabilities', require('./routes/liabilities'));
+  
+  console.log('Loading insurance route...');
   app.use('/api/insurance', require('./routes/insurance'));
+  
+  console.log('Loading investments route...');
   app.use('/api/investments', require('./routes/investments'));
+  
+  console.log('Loading savings route...');
   app.use('/api/savings', require('./routes/savings'));
+  
+  console.log('Loading tax route...');
   app.use('/api/tax', require('./routes/tax'));
+  
+  console.log('Loading dashboard route...');
+  app.use('/api/dashboard', require('./routes/dashboard'));
+  
+  console.log('Loading news route...');
   app.use('/api/news', require('./routes/news'));
+  
   console.log('All routes loaded successfully');
 } catch (err) {
   console.error('Error loading routes:', err.message || err);
@@ -67,8 +101,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Setup automatic news updates
+const { setupAutomaticNewsUpdates, addSampleNews } = require('./services/newsService');
 const newsUpdateInterval = parseInt(process.env.NEWS_UPDATE_INTERVAL || '60'); // minutes
-setupAutomaticNewsUpdates(newsUpdateInterval);
+setupAutomaticNewsUpdates(newsUpdateInterval).catch(err => console.error('Error setting up news updates:', err));
 
 // Add sample news in development mode
 if (process.env.NODE_ENV === 'development') {
@@ -102,22 +137,9 @@ async function startServer() {
     console.log('Using MongoDB Atlas database');
     
     // Start the server
-    const server = app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-      console.log(`Backend server is ready to accept connections`);
+    app.listen(5001, '0.0.0.0', () => {
+      console.log("server running on 5001");
     });
-    
-    // Handle server errors
-    server.on('error', (err) => {
-      console.error('Server error:', err.message || err);
-      if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use`);
-      }
-      process.exit(1);
-    });
-    
-    // Keep process alive
-    console.log('Server initialization complete');
     
     // Handle uncaught exceptions
     process.on('uncaughtException', (err) => {

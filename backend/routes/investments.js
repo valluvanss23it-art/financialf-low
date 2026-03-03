@@ -8,17 +8,6 @@ const Investment = require('../models/Investment');
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
-    // Check if using MySQL
-    if (req.pool || req.db) {
-      const connection = req.pool || req.db;
-      const [investments] = await connection.query(
-        'SELECT * FROM investments WHERE user_id = ? ORDER BY created_at DESC',
-        [req.userId]
-      );
-      return res.json({ success: true, data: investments });
-    }
-    
-    // MongoDB fallback
     const investments = await Investment.find({ userId: req.userId }).sort({ createdAt: -1 });
     res.json({ success: true, data: investments });
   } catch (error) {
@@ -33,35 +22,38 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
   try {
     const { name, type, amount, currentValue, purchaseDate, quantity, purchasePrice, returns, notes } = req.body;
-    
-    // Check if using MySQL
-    if (req.pool || req.db) {
-      const connection = req.pool || req.db;
-      const [result] = await connection.query(
-        `INSERT INTO investments (user_id, name, type, amount, current_value, purchase_date, quantity, purchase_price, expected_return, notes, created_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
-        [req.userId, name, type, amount, currentValue, purchaseDate || null, quantity || null, purchasePrice || null, returns || null, notes || null]
-      );
-      
-      const [newInvestment] = await connection.query(
-        'SELECT * FROM investments WHERE id = ?',
-        [result.insertId]
-      );
-      
-      return res.status(201).json({ success: true, data: newInvestment[0] });
+
+    // Validate required fields
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ success: false, message: 'Investment name is required' });
     }
-    
-    // MongoDB fallback
+
+    if (!type || type.trim() === '') {
+      return res.status(400).json({ success: false, message: 'Investment type is required' });
+    }
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ success: false, message: 'Amount must be greater than 0' });
+    }
+
     const investment = new Investment({
-      ...req.body,
-      userId: req.userId
+      userId: req.userId,
+      name,
+      type,
+      amount: parseFloat(amount),
+      currentValue: currentValue ? parseFloat(currentValue) : parseFloat(amount),
+      purchaseDate: purchaseDate ? new Date(purchaseDate) : new Date(),
+      quantity: quantity ? parseFloat(quantity) : null,
+      purchasePrice: purchasePrice ? parseFloat(purchasePrice) : null,
+      returns: returns ? parseFloat(returns) : null,
+      notes: notes || null
     });
 
     await investment.save();
-    res.status(201).json({ success: true, data: investment });
+    res.status(201).json({ success: true, message: 'Investment added successfully', data: investment });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error creating investment:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 });
 
@@ -70,39 +62,6 @@ router.post('/', auth, async (req, res) => {
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
   try {
-    const { name, type, amount, currentValue, purchaseDate, quantity, purchasePrice, returns, notes } = req.body;
-    
-    // Check if using MySQL
-    if (req.pool || req.db) {
-      const connection = req.pool || req.db;
-      await connection.query(
-        `UPDATE investments SET 
-         name = COALESCE(?, name),
-         type = COALESCE(?, type),
-         amount = COALESCE(?, amount),
-         current_value = COALESCE(?, current_value),
-         purchase_date = COALESCE(?, purchase_date),
-         quantity = COALESCE(?, quantity),
-         purchase_price = COALESCE(?, purchase_price),
-         expected_return = COALESCE(?, expected_return),
-         notes = COALESCE(?, notes)
-         WHERE id = ? AND user_id = ?`,
-        [name, type, amount, currentValue, purchaseDate, quantity, purchasePrice, returns, notes, req.params.id, req.userId]
-      );
-      
-      const [updatedInvestment] = await connection.query(
-        'SELECT * FROM investments WHERE id = ? AND user_id = ?',
-        [req.params.id, req.userId]
-      );
-      
-      if (updatedInvestment.length === 0) {
-        return res.status(404).json({ success: false, message: 'Investment not found' });
-      }
-      
-      return res.json({ success: true, data: updatedInvestment[0] });
-    }
-    
-    // MongoDB fallback
     const investment = await Investment.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
       req.body,
@@ -113,7 +72,7 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Investment not found' });
     }
 
-    res.json({ success: true, data: investment });
+    res.json({ success: true, message: 'Investment updated successfully', data: investment });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -125,29 +84,13 @@ router.put('/:id', auth, async (req, res) => {
 // @access  Private
 router.delete('/:id', auth, async (req, res) => {
   try {
-    // Check if using MySQL
-    if (req.pool || req.db) {
-      const connection = req.pool || req.db;
-      const [result] = await connection.query(
-        'DELETE FROM investments WHERE id = ? AND user_id = ?',
-        [req.params.id, req.userId]
-      );
-      
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ success: false, message: 'Investment not found' });
-      }
-      
-      return res.json({ success: true, message: 'Investment deleted' });
-    }
-    
-    // MongoDB fallback
     const investment = await Investment.findOneAndDelete({ _id: req.params.id, userId: req.userId });
 
     if (!investment) {
       return res.status(404).json({ success: false, message: 'Investment not found' });
     }
 
-    res.json({ success: true, message: 'Investment deleted' });
+    res.json({ success: true, message: 'Investment deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server error' });

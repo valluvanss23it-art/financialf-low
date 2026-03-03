@@ -19,7 +19,7 @@ const newsSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['market', 'economy', 'stocks', 'crypto', 'commodities', 'general'],
+    enum: ['general', 'india', 'global', 'tech', 'banking', 'crypto'],
     default: 'general'
   },
   imageUrl: {
@@ -39,8 +39,7 @@ const newsSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    default: () => new Date(+new Date() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    index: true
+    default: () => new Date(+new Date() + 30 * 24 * 60 * 60 * 1000) // 30 days
   }
 });
 

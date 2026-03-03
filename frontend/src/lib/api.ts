@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5001/api';
 
 // Create axios instance
 const api = axios.create({
@@ -141,6 +141,7 @@ export const newsAPI = {
 // Transactions API
 export const transactionsAPI = {
   getAll: () => api.get('/transactions'),
+  getSummary: () => api.get('/transactions/summary'),
 };
 
 export default api;

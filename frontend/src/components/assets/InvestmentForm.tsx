@@ -49,30 +49,74 @@ export function InvestmentForm({ onSuccess, useInvestmentsAPI = false }: Investm
     e.preventDefault();
     if (!user) return;
 
+    // Validation: Check required fields exist and are not empty
     if (!formData.name || !formData.investment_amount || !formData.current_value) {
-      toast.error('Please fill in required fields');
+      toast.error('Please fill in all required fields (Name, Investment Amount, Current Value)');
       return;
+    }
+
+    // Parse and validate numeric values
+    const investmentAmount = parseFloat(formData.investment_amount);
+    const currentValue = parseFloat(formData.current_value);
+
+    // Check if parsed values are valid numbers
+    if (isNaN(investmentAmount) || isNaN(currentValue)) {
+      toast.error('Investment Amount and Current Value must be valid numbers');
+      return;
+    }
+
+    // Check if values are positive
+    if (investmentAmount <= 0 || currentValue <= 0) {
+      toast.error('Investment Amount and Current Value must be greater than 0');
+      return;
+    }
+
+    // Optional fields validation
+    let quantity = null;
+    let purchasePrice = null;
+    let expectedReturn = null;
+
+    if (formData.quantity) {
+      quantity = parseFloat(formData.quantity);
+      if (isNaN(quantity) || quantity <= 0) {
+        toast.error('Quantity must be a valid positive number');
+        return;
+      }
+    }
+
+    if (formData.unit_price) {
+      purchasePrice = parseFloat(formData.unit_price);
+      if (isNaN(purchasePrice) || purchasePrice <= 0) {
+        toast.error('Unit Price must be a valid positive number');
+        return;
+      }
+    }
+
+    if (formData.expected_return) {
+      expectedReturn = parseFloat(formData.expected_return);
+      if (isNaN(expectedReturn)) {
+        toast.error('Expected Return must be a valid number');
+        return;
+      }
     }
 
     setIsSubmitting(true);
 
     try {
       // Calculate gain/loss
-      const investmentAmount = parseFloat(formData.investment_amount);
-      const currentValue = parseFloat(formData.current_value);
       const gainLoss = currentValue - investmentAmount;
       const gainLossPercent = (gainLoss / investmentAmount) * 100;
 
       const investmentData = {
-        name: formData.name,
+        name: formData.name.trim(),
         type: formData.type,
         amount: investmentAmount,
         currentValue: currentValue,
         purchaseDate: formData.purchase_date || null,
-        quantity: formData.quantity ? parseFloat(formData.quantity) : null,
-        purchasePrice: formData.unit_price ? parseFloat(formData.unit_price) : null,
-        returns: formData.expected_return ? parseFloat(formData.expected_return) : null,
-        notes: `Risk: ${formData.risk_level} | ${formData.notes || ''}`.trim(),
+        quantity: quantity,
+        purchasePrice: purchasePrice,
+        returns: expectedReturn,
+        notes: `Risk: ${formData.risk_level}${formData.notes ? ' | ' + formData.notes.trim() : ''}`,
       };
 
       // Use the appropriate API based on the flag
@@ -81,16 +125,16 @@ export function InvestmentForm({ onSuccess, useInvestmentsAPI = false }: Investm
       } else {
         // For assetsAPI, use different field names
         await assetsAPI.create({
-          name: formData.name,
+          name: formData.name.trim(),
           type: formData.type,
           purchase_value: investmentAmount,
           current_value: currentValue,
           purchase_date: formData.purchase_date || null,
-          notes: `Investment | Risk: ${formData.risk_level} | Expected Return: ${formData.expected_return}% | Gain/Loss: ${gainLossPercent.toFixed(2)}% | ${formData.notes}`,
+          notes: `Investment | Risk: ${formData.risk_level} | Expected Return: ${expectedReturn ? expectedReturn.toFixed(2) : '0'}% | Gain/Loss: ${gainLossPercent.toFixed(2)}%${formData.notes ? ' | ' + formData.notes.trim() : ''}`,
         });
       }
 
-      toast.success(`Investment added! Gain/Loss: ${gainLossPercent.toFixed(2)}%`);
+      toast.success(`Investment added! Gain/Loss: ₹${gainLoss.toFixed(2)} (${gainLossPercent.toFixed(2)}%)`);
       setFormData({
         name: '',
         type: 'mutual_funds',
@@ -112,10 +156,14 @@ export function InvestmentForm({ onSuccess, useInvestmentsAPI = false }: Investm
     setIsSubmitting(false);
   };
 
-  const investmentAmount = parseFloat(formData.investment_amount) || 0;
-  const currentValue = parseFloat(formData.current_value) || 0;
-  const gainLoss = currentValue - investmentAmount;
-  const gainLossPercent = investmentAmount > 0 ? (gainLoss / investmentAmount) * 100 : 0;
+  const investmentAmount = formData.investment_amount ? parseFloat(formData.investment_amount) : 0;
+  const currentValue = formData.current_value ? parseFloat(formData.current_value) : 0;
+  const gainLoss = !isNaN(investmentAmount) && !isNaN(currentValue) ? currentValue - investmentAmount : 0;
+  const gainLossPercent = !isNaN(investmentAmount) && investmentAmount > 0 ? (gainLoss / investmentAmount) * 100 : 0;
+  
+  // Validation state checks
+  const isInvestmentAmountValid = !formData.investment_amount || (investmentAmount > 0 && !isNaN(investmentAmount));
+  const isCurrentValueValid = !formData.current_value || (currentValue > 0 && !isNaN(currentValue));
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -177,7 +225,11 @@ export function InvestmentForm({ onSuccess, useInvestmentsAPI = false }: Investm
             value={formData.investment_amount}
             onChange={(e) => setFormData({ ...formData, investment_amount: e.target.value })}
             placeholder="0.00"
+            className={!isInvestmentAmountValid ? 'border-red-500' : ''}
           />
+          {!isInvestmentAmountValid && (
+            <p className="text-xs text-red-500">Must be a positive number</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -189,11 +241,15 @@ export function InvestmentForm({ onSuccess, useInvestmentsAPI = false }: Investm
             value={formData.current_value}
             onChange={(e) => setFormData({ ...formData, current_value: e.target.value })}
             placeholder="0.00"
+            className={!isCurrentValueValid ? 'border-red-500' : ''}
           />
+          {!isCurrentValueValid && (
+            <p className="text-xs text-red-500">Must be a positive number</p>
+          )}
         </div>
       </div>
 
-      {investmentAmount > 0 && (
+      {investmentAmount > 0 && currentValue > 0 && !isNaN(gainLoss) && !isNaN(gainLossPercent) && (
         <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-4 h-4 text-blue-600" />

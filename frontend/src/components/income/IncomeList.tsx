@@ -115,7 +115,7 @@ export function IncomeList({ incomes, isLoading, onRefresh }: IncomeListProps) {
           </TableHeader>
           <TableBody>
             {incomes.map((income) => (
-              <TableRow key={income.id}>
+              <TableRow key={income._id || income.id}>
                 <TableCell className="font-medium">
                   {format(new Date(income.date), 'dd MMM yyyy')}
                 </TableCell>

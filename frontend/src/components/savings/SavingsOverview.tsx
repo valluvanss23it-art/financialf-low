@@ -23,7 +23,7 @@ export function SavingsOverview() {
 
       try {
         const { data } = await goalsAPI.getAll();
-        const activeGoals = (data || [])
+        const activeGoals = (data.data || [])
           .filter((g: any) => !g.is_completed)
           .slice(0, 6);
         setGoals(activeGoals);

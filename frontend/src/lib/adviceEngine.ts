@@ -14,104 +14,110 @@ interface AdviceInput {
   riskTolerance: RiskTolerance;
   expenseHistory: Array<{ month: string; total: number }>;
   incomeStability: "Low" | "Medium" | "High";
+  market?: { goldPrice?: number; stockIndex?: number; mutualFundNAV?: number };
 }
 
-interface Advice {
-  title: string;
-  description: string;
-  priority: "High" | "Medium" | "Low";
-  action: string;
-  timeframe?: string;
+interface AllocationAdvice {
+  equity: number;
+  debt: number;
+  gold: number;
+  mutualFunds: number;
 }
 
-export function generateAdvice(input: AdviceInput): Advice[] {
-  const advice: Advice[] = [];
+interface SpendingAdvice {
+  topOverspends: Array<{ name: string; amount: string }>;
+  trend?: {
+    direction: "up" | "down";
+    changePct: number;
+  };
+}
+
+interface PersonalizedAdvice {
+  allocation: AllocationAdvice;
+  spending: SpendingAdvice;
+  actions: string[];
+}
+
+export function generateAdvice(input: AdviceInput): PersonalizedAdvice {
+  // Determine allocation based on risk tolerance
+  let allocation: AllocationAdvice;
+
+  if (input.riskTolerance === "Low") {
+    allocation = { equity: 30, debt: 50, gold: 15, mutualFunds: 5 };
+  } else if (input.riskTolerance === "High") {
+    allocation = { equity: 60, debt: 20, gold: 10, mutualFunds: 10 };
+  } else {
+    // Medium (default)
+    allocation = { equity: 45, debt: 35, gold: 12, mutualFunds: 8 };
+  }
+
+  // Calculate spending advice
+  const topOverspends = input.monthlyExpenses
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 3)
+    .map((e) => ({
+      name: e.name,
+      amount: `₹${e.amount.toLocaleString()}`,
+    }));
+
+  // Calculate trend
+  let trend;
+  if (input.expenseHistory && input.expenseHistory.length >= 2) {
+    const current =
+      input.expenseHistory[input.expenseHistory.length - 1]?.total || 0;
+    const previous =
+      input.expenseHistory[input.expenseHistory.length - 2]?.total || 0;
+    const changePct =
+      previous > 0 ? ((current - previous) / previous) * 100 : 0;
+    trend = {
+      direction: changePct > 0 ? ("up" as const) : ("down" as const),
+      changePct: Math.round(Math.abs(changePct)),
+    };
+  }
+
+  // Generate actionable advice
+  const actions: string[] = [];
 
   const savingsRate =
     input.monthlyIncome > 0
       ? (input.monthlySavings / input.monthlyIncome) * 100
       : 0;
 
-  // Check emergency fund
-  if (input.monthlySavings < input.monthlyIncome * 0.2) {
-    advice.push({
-      title: "Build Your Emergency Fund",
-      description:
-        "You should aim to save 20-30% of your income. Currently at " +
-        savingsRate.toFixed(1) +
-        "%.",
-      priority: "High",
-      action: "Increase monthly savings to reach 3-6 months of expenses",
-      timeframe: "6-12 months",
-    });
+  if (savingsRate < 20) {
+    actions.push("Increase savings target to 20-30% of income");
   }
 
-  // Check investment allocations
   if (input.existingInvestments === 0 && input.monthlySavings > 0) {
-    advice.push({
-      title: "Consider Investing",
-      description:
-        "With a good savings rate, consider diversifying into investments based on your risk tolerance.",
-      priority: input.riskTolerance === "Low" ? "Medium" : "High",
-      action:
-        input.riskTolerance === "Low"
-          ? "Explore conservative investments like bonds"
-          : "Consider a diversified portfolio of stocks and bonds",
-      timeframe: "3-6 months",
-    });
-  }
-
-  // Check largest expense category
-  if (input.monthlyExpenses.length > 0) {
-    const largestExpense = input.monthlyExpenses.reduce((prev, current) =>
-      prev.amount > current.amount ? prev : current
+    actions.push(
+      input.riskTolerance === "Low"
+        ? "Start with conservative investments like bonds or PPF"
+        : "Begin a diversified investment portfolio"
     );
-
-    if (
-      largestExpense.amount > input.monthlyIncome * 0.3
-    ) {
-      advice.push({
-        title: `Review Your ${largestExpense.name} Spending`,
-        description: `Your ${largestExpense.name.toLowerCase()} represents ${((largestExpense.amount / input.monthlyIncome) * 100).toFixed(1)}% of your income.`,
-        priority: "Medium",
-        action: `Look for ways to reduce ${largestExpense.name.toLowerCase()} expenses`,
-        timeframe: "1-3 months",
-      });
-    }
   }
 
-  // Income stability advice
+  if (topOverspends.length > 0) {
+    actions.push(`Review and optimize ${topOverspends[0]?.name} spending`);
+  }
+
   if (input.incomeStability === "Low") {
-    advice.push({
-      title: "Stabilize Your Income",
-      description: "Your income appears unstable. Build a larger emergency fund.",
-      priority: "High",
-      action: "Aim for 6-12 months of expenses in savings",
-      timeframe: "12+ months",
-    });
+    actions.push("Build emergency fund for 6-12 months of expenses");
   }
 
-  // Age-based advice
-  if (input.age < 30 && input.existingInvestments < input.monthlyIncome * 24) {
-    advice.push({
-      title: "Leverage Your Youth",
-      description:
-        "You have time for compound growth. Start investing early for long-term wealth.",
-      priority: "High",
-      action: "Set up a long-term investment plan",
-      timeframe: "Ongoing",
-    });
+  if (input.age < 35) {
+    actions.push("Leverage tax-advantaged investments like equity mutual funds");
   }
 
-  return advice.length > 0
-    ? advice
-    : [
-        {
-          title: "You're On Track",
-          description:
-            "Your finances look healthy. Keep up your current savings rate.",
-          priority: "Low",
-          action: "Continue current financial habits",
-        },
-      ];
+  if (actions.length === 0) {
+    actions.push("Maintain current financial discipline");
+    actions.push("Review portfolio quarterly");
+  }
+
+  return {
+    allocation,
+    spending: {
+      topOverspends,
+      trend,
+    },
+    actions,
+  };
 }
